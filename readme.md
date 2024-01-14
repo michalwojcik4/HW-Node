@@ -75,7 +75,9 @@ The server will be running at http://localhost:3000.
 - Request:
   - Params: id - Contact ID
   - Body: JSON object with fields to update (name, email, phone)
-- Response: - Body: Updated contact object - Status Code: 200 if successful, 400 if missing fields, 404 if not found
+- Response:
+  - Body: Updated contact object
+  - Status Code: 200 if successful, 400 if missing fields, 404 if not found
 
 ## Data Validation
 
