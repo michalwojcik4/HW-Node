@@ -1,13 +1,9 @@
-import { promises as fs } from "fs";
-import path from "path";
-import { nanoid } from "nanoid";
-
-const contactsPath = path.join(process.cwd(), "./models/contacts.json");
+import { Contact } from "./schemas/contact.schemas.js";
 
 const listContacts = async () => {
   try {
-    const data = await fs.readFile(contactsPath, "utf-8");
-    return JSON.parse(data);
+    const data = await Contact.find();
+    return data;
   } catch (error) {
     throw error;
   }
@@ -28,8 +24,7 @@ const getContactById = async (contactId) => {
 
 const addContact = async (body) => {
   try {
-    const contacts = await listContacts();
-    const { name, email, phone } = body;
+    const { name, email, phone, favorite } = body;
     if (!name) {
       throw new Error("missing required name");
     }
@@ -39,9 +34,12 @@ const addContact = async (body) => {
     if (!phone) {
       throw new Error("missing required phone");
     }
-    const newContact = { id: nanoid(), ...body };
-    contacts.push(newContact);
-    await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
+    const newContact = Contact.create({
+      name,
+      email,
+      phone,
+      favorite,
+    });
     return newContact;
   } catch (error) {
     throw error;
@@ -55,10 +53,8 @@ const removeContact = async (contactId) => {
     if (!isContact) {
       throw new Error("Contact not found");
     }
-    const updatedContacts = contacts.filter(
-      (contact) => contact.id !== contactId
-    );
-    await fs.writeFile(contactsPath, JSON.stringify(updatedContacts, null, 2));
+    const updatedContacts = Contact.findOneAndDelete({ _id: contactId });
+    return updatedContacts;
   } catch (error) {
     throw error;
   }
@@ -78,11 +74,15 @@ const updateContact = async (contactId, body) => {
       throw new Error("Missing fields");
     }
 
-    const updatedContacts = contacts.map((contact) =>
-      contact.id === contactId ? { ...contact, ...body } : contact
+    const updatedContacts = Contact.findOneAndUpdate(
+      { _id: contactId },
+      {
+        name,
+        email,
+        phone,
+      }
     );
-    await fs.writeFile(contactsPath, JSON.stringify(updatedContacts, null, 2));
-    return updatedContacts.find((contact) => contact.id === contactId);
+    return updatedContacts;
   } catch (error) {
     throw error;
   }

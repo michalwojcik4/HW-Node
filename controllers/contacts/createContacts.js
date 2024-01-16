@@ -1,4 +1,4 @@
-import { addContact } from "#models/contacts.js";
+import { addContact } from "#service/contacts.js";
 import { contactSchema } from "#validators/contactSchema.js";
 
 const createContacts = async (req, res, next) => {
@@ -11,15 +11,6 @@ const createContacts = async (req, res, next) => {
     const contact = await addContact(newContact);
     res.status(201).json(contact);
   } catch (error) {
-    if (error.message === "missing required name") {
-      return res.status(400).json({ message: "Missing required name" });
-    }
-    if (error.message === "missing required email") {
-      return res.status(400).json({ message: "Missing required email" });
-    }
-    if (error.message === "missing required phone") {
-      return res.status(400).json({ message: "Missing required phone" });
-    }
     next(error);
   }
 };
