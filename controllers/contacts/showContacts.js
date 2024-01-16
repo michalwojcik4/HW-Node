@@ -1,12 +1,18 @@
-import { getContactById } from "#service/contacts.js";
+import { Contact } from "#service/schemas/contactSchema.js";
 
 const showContacts = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const contact = await getContactById(id);
+
+    const contact = await Contact.findById(id);
+
+    if (!contact) {
+      return res.status(404).json({ message: "Not found" });
+    }
     res.json(contact);
   } catch (e) {
-    res.status(404).json({ message: "Not found" });
+    console.error(e);
+    res.status(500).json({ message: "Internal Server Error" });
     next(e);
   }
 };
