@@ -9,9 +9,22 @@ const app = express();
 
 dotenv.config();
 
-const connection = mongoose.connect(process.env.MONGO_URL, {
+const mongoUrl = process.env.MONGO_URL;
+
+mongoose.connect(mongoUrl, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+});
+
+const connection = mongoose.connection;
+
+connection.on("error", (err) => {
+  console.error(`MongoDB connection error: ${err}`);
+  process.exit(1);
+});
+
+connection.once("open", () => {
+  console.log("Database connection successful");
 });
 
 const formatsLogger = app.get("env") === "development" ? "dev" : "short";
