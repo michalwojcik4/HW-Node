@@ -11,9 +11,13 @@ const updateContacts = async (req, res, next) => {
       return res.status(400).json({ message: error.details[0].message });
     }
 
-    const updatedContact = await Contact.findByIdAndUpdate(id, {
-      $set: { name, email, phone },
-    });
+    const updatedContact = await Contact.findByIdAndUpdate(
+      id,
+      {
+        $set: { name, email, phone },
+      },
+      { new: true }
+    );
 
     if (!updatedContact) {
       return res.status(404).json({ message: "Not found" });

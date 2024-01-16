@@ -9,9 +9,13 @@ const updateFavoriteContact = async (req, res, next) => {
   }
 
   try {
-    const updatedContact = await Contact.findByIdAndUpdate(id, {
-      $set: { favorite },
-    });
+    const updatedContact = await Contact.findByIdAndUpdate(
+      id,
+      {
+        $set: { favorite },
+      },
+      { new: true }
+    );
 
     if (!updatedContact) {
       return res.status(404).json({ message: "Not found" });
