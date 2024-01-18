@@ -1,31 +1,100 @@
-## GoIT Node.js Course Template Homework
+# Contacts REST API
 
-Виконайте форк цього репозиторію для виконання домашніх завдань (2-6)
-Форк створить репозиторій на вашому http://github.com
+This project is a simple REST API for managing a collection of contacts. It utilizes Express.js for the web server, with additional middleware for logging (morgan) and handling Cross-Origin Resource Sharing (CORS). The API supports basic CRUD operations for contacts stored in a JSON file.
 
-Додайте ментора до колаборації
+## Getting Started
 
-Для кожної домашньої роботи створюйте свою гілку.
+### Prerequisites
 
-- hw02
-- hw03
-- hw04
-- hw05
-- hw06
+- Node.js installed
+- npm (Node Package Manager) installed
+- Postman for testing the API
 
-Кожна нова гілка для др повинна робитися з master
+### Installation
 
-Після того, як ви закінчили виконувати домашнє завдання у своїй гілці, необхідно зробити пулл-реквест (PR). Потім додати ментора для рев'ю коду. Тільки після того, як ментор заапрувить PR, ви можете виконати мердж гілки з домашнім завданням у майстер.
+1. Clone the repository:
 
-Уважно читайте коментарі ментора. Виправте зауваження та зробіть коміт у гілці з домашнім завданням. Зміни підтягнуться у PR автоматично після того, як ви відправите коміт з виправленнями на github
-Після виправлення знову додайте ментора на рев'ю коду.
+`git clone https://github.com/your-username/contacts-api.git`
 
-- При здачі домашньої роботи є посилання на PR
-- JS-код чистий та зрозумілий, для форматування використовується Prettier
+2. Switch to the project directory:
 
-### Команди:
+`cd contacts-api`
 
-- `npm start` &mdash; старт сервера в режимі production
-- `npm run start:dev` &mdash; старт сервера в режимі розробки (development)
-- `npm run lint` &mdash; запустити виконання перевірки коду з eslint, необхідно виконувати перед кожним PR та виправляти всі помилки лінтера
-- `npm lint:fix` &mdash; та ж перевірка лінтера, але з автоматичними виправленнями простих помилок
+3. Install dependencies:
+
+`npm install`
+
+### Usage
+
+Start the server:
+
+`npm start`
+
+The server will be running at http://localhost:3000.
+
+## API Routes
+
+### GET /api/contacts
+
+- Description: Retrieve all contacts.
+- Request: None
+- Response:
+  - Body: Array of contacts in JSON format
+  - Status Code: 200
+
+### GET /api/contacts/:id
+
+- Description: Retrieve a specific contact by ID.
+- Request:
+  - Params: id - Contact ID
+- Response:
+  - Body: Contact object in JSON format
+  - Status Code: 200 if found, 404 if not found
+
+### POST /api/contacts
+
+- Description: Add a new contact.
+- Request:
+  - Body: JSON object with name, email, and phone fields (all mandatory)
+- Response:
+  - Body: Newly added contact object with assigned ID
+  - Status Code: 201 if successful, 400 if missing required fields
+
+### DELETE /api/contacts/:id
+
+- Description: Delete a contact by ID.
+- Request:
+  - Params: id - Contact ID
+- Response:
+  - Body: JSON object with message
+  - Status Code: 200 if successful, 404 if not found
+
+### PUT /api/contacts/:id
+
+- Description: Update a contact by ID.
+- Request:
+  - Params: id - Contact ID
+  - Body: JSON object with fields to update (name, email, phone)
+- Response:
+  - Body: Updated contact object
+  - Status Code: 200 if successful, 400 if missing fields, 404 if not found
+
+### PATCH /api/contacts/:id/favorite
+
+- Description: Update a favorite in contact by ID.
+- Request:
+  - Params: id - Contact ID
+  - Body: JSON object with fields to update (favorite)
+- Response:
+  - Body: Updated contact object
+  - Status Code: 200 if successful, 400 if missing fields, 404 if not found
+
+## Data Validation
+
+Data validation is performed using the Joi library. For routes that accept data (POST and PUT), ensure to include all required fields and validate against the specified schema.
+
+## Additional Notes
+
+- This project uses Express.js, Morgan, CORS, and Joi for data validation.
+- Contacts are stored in a JSON file (contacts.json).
+- Ensure to test API endpoints using Postman or a similar tool.
