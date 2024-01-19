@@ -1,9 +1,11 @@
 import express from "express";
 import logger from "morgan";
 import cors from "cors";
-import contactsRouter from "./routes/api/contacts.js";
+import contactsRouter from "./contacts/contacts.routes.js";
+import usersRouter from "./users/user.routes.js";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import { auth } from "./users/middleware/authenticate.js";
 
 const app = express();
 
@@ -32,8 +34,10 @@ const formatsLogger = app.get("env") === "development" ? "dev" : "short";
 app.use(logger(formatsLogger));
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-app.use("/", contactsRouter);
+app.use("/users", usersRouter);
+app.use("/contacts", auth, contactsRouter);
 
 app.use((req, res) => {
   res.status(404).json({ message: "Not found" });
