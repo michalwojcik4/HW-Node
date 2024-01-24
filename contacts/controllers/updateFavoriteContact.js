@@ -1,7 +1,7 @@
-import { Contact } from "#service/schemas/contactSchema.js";
+import { Contact } from "../contact.schema.js";
 
 const updateFavoriteContact = async (req, res, next) => {
-  const { id } = req.params;
+  const { email } = req.params;
   const { favorite } = req.body;
 
   if (typeof favorite !== "boolean") {
@@ -9,8 +9,8 @@ const updateFavoriteContact = async (req, res, next) => {
   }
 
   try {
-    const updatedContact = await Contact.findByIdAndUpdate(
-      id,
+    const updatedContact = await Contact.findOneAndUpdate(
+      { email, owner: req.user._id },
       {
         $set: { favorite },
       },
@@ -25,7 +25,7 @@ const updateFavoriteContact = async (req, res, next) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal Server Error" });
-    next(error);
+    return next(error);
   }
 };
 

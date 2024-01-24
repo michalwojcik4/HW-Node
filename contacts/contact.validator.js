@@ -1,6 +1,6 @@
 import Joi from "joi";
 
-const contactSchema = Joi.object({
+const validatorContact = Joi.object({
   name: Joi.string()
     .pattern(/^[A-Z][a-z]+ [A-Z][a-z]+$/)
     .required(),
@@ -11,4 +11,4 @@ const contactSchema = Joi.object({
   favorite: Joi.boolean().default(false),
 });
 
-export { contactSchema };
+export { validatorContact };
