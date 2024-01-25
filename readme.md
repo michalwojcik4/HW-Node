@@ -4,7 +4,7 @@ This project is a simple REST API for managing a collection of contacts. It util
 
 ### Swagger
 
-'http://localhost:3000'/api-docs
+A description of the endpoints can be found after: /api-docs
 
 ## Getting Started
 
