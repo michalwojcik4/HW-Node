@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import { User } from "../user.schema.js";
+import gravatar from "gravatar";
 
 const signup = async (req, res, next) => {
   try {
@@ -11,11 +12,22 @@ const signup = async (req, res, next) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await User.create({ email, password: hashedPassword });
+    const avatarURL = gravatar.url(email, { s: "250", r: "g", d: "identicon" });
+    const user = await User.create({
+      email,
+      password: hashedPassword,
+      avatarURL,
+    });
 
     return res
       .status(201)
-      .json({ user: { email: user.email, subscription: user.subscription } });
+      .json({
+        user: {
+          email: user.email,
+          subscription: user.subscription,
+          avatar: user.avatarURL,
+        },
+      });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal Server Error" });
