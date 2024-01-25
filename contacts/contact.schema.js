@@ -17,6 +17,7 @@ const contactSchema = new mongoose.Schema(
     },
     favorite: {
       type: Boolean,
+      enum: [false, true],
       default: false,
     },
     owner: {
