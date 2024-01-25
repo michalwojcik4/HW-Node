@@ -2,6 +2,10 @@
 
 This project is a simple REST API for managing a collection of contacts. It utilizes Express.js for the web server, with additional middleware for logging (morgan) and handling Cross-Origin Resource Sharing (CORS). The API supports basic CRUD operations for contacts stored in a JSON file.
 
+### Swagger
+
+'http://localhost:3000'/api-docs
+
 ## Getting Started
 
 ### Prerequisites
