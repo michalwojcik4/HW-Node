@@ -17,7 +17,7 @@ const updateUserAvatar = async (req, res, next) => {
     }
 
     const { path: tmpPath } = req.file;
-    const newFileName = `${user.email}_avatar.jpg`;
+    const newFileName = `${user._id}_avatar.jpg`;
     const fileName = path.join(storeImage, newFileName);
 
     const image = await jimp.read(tmpPath);
