@@ -1,4 +1,3 @@
-import { error } from "console";
 import { Contact } from "../contact.schema.js";
 
 const showContacts = async (req, res, next) => {
