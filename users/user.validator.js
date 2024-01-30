@@ -5,4 +5,8 @@ const validatorUser = Joi.object({
   password: Joi.string().required(),
 });
 
-export { validatorUser };
+const validatorEmail = Joi.object({
+  email: Joi.string().email().required(),
+});
+
+export { validatorUser, validatorEmail };

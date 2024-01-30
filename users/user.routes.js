@@ -5,11 +5,13 @@ import { logout } from "./controllers/logout.js";
 import { current } from "./controllers/current.js";
 import { updateUserSubscription } from "./controllers/updateUserSubscription.js";
 import { updateUserAvatar } from "./controllers/updateUserAvatar.js";
+import { verifyUser } from "./controllers/emailVerification.js";
 
 import { bodyValidate } from "../middleware/Validate.js";
 import { auth } from "./middleware/authenticate.js";
-import { validatorUser } from "./user.validator.js";
+import { validatorUser, validatorEmail } from "./user.validator.js";
 import { uploadAvatar } from "../middleware/uploadAvatar.js";
+import { resendVerificationEmail } from "./controllers/resendVerificationEmail.js";
 
 const router = express.Router();
 
@@ -54,9 +56,10 @@ const router = express.Router();
  * @swagger
  * /users/signup:
  *   post:
- *     summary: Register a new user
- *     description: Register a new user with email and password
- *     tags: [Users]
+ *     summary: User registration
+ *     description: Register a new user and send a verification email.
+ *     tags:
+ *       - Users
  *     requestBody:
  *       required: true
  *       content:
@@ -70,22 +73,27 @@ const router = express.Router();
  *                 type: string
  *     responses:
  *       201:
- *         description: User registered successfully
+ *         description: Successful registration
  *         content:
  *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 email:
- *                  type: string
- *                 subscription:
- *                  type: string
- *                 avatarURL:
- *                  type: string
+ *             example:
+ *               user:
+ *                 email: user@example.com
+ *                 subscription: free
+ *                 avatar: [avatarURL]
+ *                 verificationToken: [verificationToken]
  *       409:
- *         description: Email already in use
- *       400:
- *         description: Bad Request
+ *         description: User with this email already exists
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: User with this email already exists
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: Internal Server Error
  */
 router.post("/signup", bodyValidate(validatorUser), signup);
 
@@ -93,9 +101,10 @@ router.post("/signup", bodyValidate(validatorUser), signup);
  * @swagger
  * /users/login:
  *   post:
- *     summary: Log in user
- *     description: Log in user with email and password
- *     tags: [Users]
+ *     summary: Log in a user.
+ *     description: Log in a user with the provided email and password.
+ *     tags:
+ *       - Users
  *     requestBody:
  *       required: true
  *       content:
@@ -105,11 +114,17 @@ router.post("/signup", bodyValidate(validatorUser), signup);
  *             properties:
  *               email:
  *                 type: string
+ *                 format: email
+ *                 description: User's email address.
  *               password:
  *                 type: string
+ *                 description: User's password.
+ *             required:
+ *               - email
+ *               - password
  *     responses:
  *       200:
- *         description: Successful login
+ *         description: Successful login. Returns an authentication token and user information.
  *         content:
  *           application/json:
  *             schema:
@@ -117,17 +132,36 @@ router.post("/signup", bodyValidate(validatorUser), signup);
  *               properties:
  *                 token:
  *                   type: string
+ *                   description: Authentication token.
  *                 user:
- *                      type: object
- *                      properties:
- *                          email:
- *                              type: string
- *                          subscription:
- *                              type: string
+ *                   type: object
+ *                   properties:
+ *                     email:
+ *                       type: string
+ *                       description: User's email address.
+ *                     subscription:
+ *                       type: string
+ *                       description: User's subscription type.
  *       401:
- *         description: Unauthorized
- *       400:
- *         description: Bad Request
+ *         description: Invalid credentials or unverified email.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Error message.
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Internal Server Error message.
  */
 router.post("/login", bodyValidate(validatorUser), login);
 
@@ -256,5 +290,89 @@ router.patch("/", auth, updateUserSubscription);
  *         description: Internal Server Error
  */
 router.patch("/avatars", auth, uploadAvatar.single("avatar"), updateUserAvatar);
+
+/**
+ * @swagger
+ * /users/verify/{verificationToken}:
+ *   patch:
+ *     summary: Verify user by token
+ *     description: Verify a user's email using the provided verification token.
+ *     tags:
+ *       - Users
+ *     parameters:
+ *       - in: path
+ *         name: verificationToken
+ *         required: true
+ *         description: User verification token received via email.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Verification successful
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: Verification successful
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: User not found
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: Internal Server Error
+ */
+router.patch("/verify/:verificationToken", verifyUser);
+
+/**
+ * @swagger
+ * /users/verify:
+ *   post:
+ *     summary: Resend verification email
+ *     description: Resend the verification email to the user with the provided email.
+ *     tags:
+ *       - Users
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *             required:
+ *               - email
+ *     responses:
+ *       200:
+ *         description: Verification email sent
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: Verification email sent
+ *       400:
+ *         description: Verification has already been passed or missing required field email
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: Verification has already been passed
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: User not found
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: Internal Server Error
+ */
+router.post("/verify", bodyValidate(validatorEmail), resendVerificationEmail);
 
 export default router;

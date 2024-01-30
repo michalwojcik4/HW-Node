@@ -12,6 +12,8 @@ import swaggerUI from "swagger-ui-express";
 
 const app = express();
 
+dotenv.config();
+
 const swaggerOptions = {
   definition: {
     openapi: "3.0.3",
@@ -35,14 +37,7 @@ const swaggerSpec = swaggerJSDoc(swaggerOptions);
 
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerSpec));
 
-dotenv.config();
-
-const mongoUrl = process.env.MONGO_URL;
-
-mongoose.connect(mongoUrl, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+mongoose.connect(process.env.MONGO_URL);
 
 const connection = mongoose.connection;
 
