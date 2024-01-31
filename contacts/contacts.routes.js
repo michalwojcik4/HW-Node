@@ -7,7 +7,7 @@ import { deleteContacts } from "./controllers/deleteContacts.js";
 import { updateContacts } from "./controllers/updateContacts.js";
 import { updateFavoriteContact } from "./controllers/updateFavoriteContact.js";
 
-import { bodyValidate } from "../middleware/Validate.js";
+import { bodyValidate } from "../middleware/validate.js";
 import { validatorContact } from "./contact.validator.js";
 
 const router = express.Router();

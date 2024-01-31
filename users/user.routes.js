@@ -7,7 +7,7 @@ import { updateUserSubscription } from "./controllers/updateUserSubscription.js"
 import { updateUserAvatar } from "./controllers/updateUserAvatar.js";
 import { verifyUser } from "./controllers/emailVerification.js";
 
-import { bodyValidate } from "../middleware/Validate.js";
+import { bodyValidate } from "../middleware/validate.js";
 import { auth } from "./middleware/authenticate.js";
 import { validatorUser, validatorEmail } from "./user.validator.js";
 import { uploadAvatar } from "../middleware/uploadAvatar.js";
