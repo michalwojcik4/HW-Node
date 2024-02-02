@@ -28,6 +28,14 @@ A description of the endpoints can be found under: /api-docs
 
 `npm install`
 
+### Environment Variables
+
+Ensure to set the following environment variables in a `.env` file at the root of your project:
+
+- `MONGO_URL`: MongoDB connection string.
+- `JWT_SECRET`: Secret key for JSON Web Token (JWT) authentication.
+- `MAILGUN_API_KEY`: API key for Mailgun email service.
+
 ### Usage
 
 Start the server:

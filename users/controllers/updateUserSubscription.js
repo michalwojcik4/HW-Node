@@ -17,8 +17,6 @@ const updateUserSubscription = async (req, res, next) => {
 
     return res.status(200).json(updatedUser);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal Server Error" });
     next(error);
   }
 };

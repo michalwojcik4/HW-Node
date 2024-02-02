@@ -16,9 +16,7 @@ const createContacts = async (req, res, next) => {
 
     return res.status(201).json(newContact);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal Server Error" });
-    return next(error);
+    next(error);
   }
 };
 

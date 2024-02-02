@@ -15,9 +15,7 @@ const deleteContacts = async (req, res, next) => {
 
     return res.status(200).json({ message: "Contact deleted" });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal Server Error" });
-    return next(error);
+    next(error);
   }
 };
 

@@ -25,9 +25,7 @@ const login = async (req, res, next) => {
       user: { email: user.email, subscription: user.subscription },
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal Server Error" });
-    return next(error);
+    next(error);
   }
 };
 

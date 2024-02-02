@@ -2,7 +2,6 @@ import passport from "passport";
 import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
 import { User } from "../user.schema.js";
 
-//Nie działa z pliku app.js ???
 import dotenv from "dotenv";
 dotenv.config();
 

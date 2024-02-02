@@ -3,6 +3,7 @@ import { User } from "../user.schema.js";
 import gravatar from "gravatar";
 import { v4 as uuidv4 } from "uuid";
 import { transporter } from "../../shared/services/emailService.js";
+import { getEmailOptions } from "../../shared/services/emailOptions.js";
 
 const signup = async (req, res, next) => {
   try {
@@ -18,15 +19,8 @@ const signup = async (req, res, next) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     const avatarURL = gravatar.url(email, { s: "250", r: "g", d: "identicon" });
     const verificationToken = uuidv4();
-    const verificationLink = `http://localhost:3000/users/verify/${verificationToken}`;
 
-    const emailOptions = {
-      from: "no-reply@sandboxb714d8c4f77047a3980e9639fc1b71e2.mailgun.org",
-      to: email,
-      subject: "Account Verification",
-      html: `<p>Click the following link to verify your account:</p>
-            <a href="${verificationLink}">${verificationLink}</a>`,
-    };
+    const emailOptions = getEmailOptions(email, verificationToken);
 
     await transporter.sendMail(emailOptions);
 
@@ -46,9 +40,7 @@ const signup = async (req, res, next) => {
       },
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal Server Error" });
-    return next(error);
+    next(error);
   }
 };
 

@@ -2,7 +2,7 @@ const current = async (req, res, next) => {
   try {
     const user = req.user;
 
-    if (!user) {
+    if (user.token === null) {
       return res.status(401).json({ message: "Not authorized" });
     }
 
@@ -10,9 +10,7 @@ const current = async (req, res, next) => {
       .status(200)
       .json({ email: user.email, subscription: user.subscription });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal Server Error" });
-    return next(error);
+    next(error);
   }
 };
 

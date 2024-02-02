@@ -11,9 +11,7 @@ const showContacts = async (req, res, next) => {
     }
     return res.json(contact);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal Server Error" });
-    return next(error);
+    next(error);
   }
 };
 
